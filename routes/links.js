@@ -7,7 +7,7 @@ const linkController = require('../controllers/linkController');
 **/
 
 router.get('/', linkController.getAllLinks); // /api/links
-router.post('/', linkController.createLink); 
+router.post('/', linkController.createLink); // api/links/1
 router.get('/:id', linkController.getLinkById); 
 router.put('/:id', linkController.updateLinkById); 
 router.delete('/:id', linkController.deleteLinkById); 
