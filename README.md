@@ -51,6 +51,7 @@ Avant de commencer, assurez-vous d'avoir installé sur votre machine :
     # Connexion à votre base de données MongoDB
     # Remplacez <username>, <password> et <dbname>
     MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority
+    # NOUS avons mis la ligne : MONGO_URI=mongodb://hubadmin:toto@localhost/mini-reddit?retryWrites=true&authSource=admin
 
     # Clé secrète pour signer les tokens JWT (inventez une longue chaîne aléatoire)
     JWT_SECRET=votreclesecreteultralongueetaleatoire123!
