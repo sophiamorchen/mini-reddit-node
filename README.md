@@ -65,13 +65,7 @@ Avant de commencer, assurez-vous d'avoir installé sur votre machine :
 4. **Demarrez la base mongoDB (via docker) => facultatif**
 
     ```bash
-   docker run -d --name le-hub-mongo \
-   -p 27017:27017 \
-   -e MONGO_INITDB_ROOT_USERNAME=hubadmin \
-   -e MONGO_INITDB_ROOT_PASSWORD=toto \
-   -e MONGO_INITDB_DATABASE=mini-reddit \
-   -v le-hub-mongo-data:/data/db \
-   mongo:8.2.1
+   docker run -d --name le-hub-mongo -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=hubadmin -e MONGO_INITDB_ROOT_PASSWORD=toto -e MONGO_INITDB_DATABASE=mini-reddit -v le-hub-mongo-data:/data/db mongo:8.2.1
     ```
 
 5. **Lancez le serveur**

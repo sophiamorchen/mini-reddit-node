@@ -10,13 +10,16 @@ Ex : { size: "large" } → création / modification
 */
 
 const Link = require('../models/Link');
+const Comment = require('../models/Comment');
 
 
 // GET /
 exports.getAllLinks = async (req, res) => {
     try {
         // .sort() => trie les résultats (ici, les plus récents en premier ( -1 ), en mettant 1, on aurait fait l'inverse. c'est une convention. )
-        const links = await Link.find().sort({createdAt: -1});
+        const links = await Link.find()
+            .populate('user', 'email')
+            .sort({ createdAt: -1 });
         res.status(200).json(links);
     } catch (error) {
         res.status(500).json({ message: 'Erreur serveur : ' + error.message });
@@ -28,7 +31,8 @@ exports.getLinkById = async (req, res) => {
     // Express met les paramètres d'URL dans req.params
     // Exemple si URL = /1 → req.params = { id: "1" }
     try {
-        const link = await Link.findById(req.params.id); 
+        const link = await Link.findById(req.params.id)
+            .populate('user', 'email'); 
         if (!link) {
             return res.status(404).json({ message: 'Link not found '})
         }
@@ -41,18 +45,30 @@ exports.getLinkById = async (req, res) => {
 
 // POST = Création d'un link
 exports.createLink = async (req, res) => {
-    const { title, url, description } = req.body;
-    const newLink = new Link({
-        title: title,
-        url: url,
-        description: description
-    });
-    // maintenant que j'ai préparé mon information, je peux faire mon try et sauvegarder mon nouveau post
     try {
-        const savedLink = await newLink.save();
+        // Création directe du document MongoDB avec Mongoose
+        const newLink = await Link.create({
+            // ...req.body => récupère automatiquement tous les champs envoyés par le client
+            // (ex: title, url, description)
+            // ⚠️ attention : tout ce que le client envoie est inclus ici
+            ...req.body,
+
+            // Ajout manuel du user connecté (sécurisé via middleware auth)
+            // req.user vient du JWT middleware
+            // req.user.id = id de l'utilisateur connecté
+            user: req.user.id
+        });
+
+        // Réponse HTTP 201 = ressource créée avec succès
+        // On renvoie le document créé en base
         res.status(201).json(newLink);
+
     } catch (error) {
-        res.status(401).json({ message: 'Erreur de validation : ' + error.message });
+        // Gestion des erreurs (validation Mongoose, champs manquants, etc.)
+        // 401 = normalement "unauthorized", ici utilisé pour erreur (pas idéal mais courant en apprentissage)
+        res.status(401).json({
+            message: 'Erreur de validation : ' + error.message
+        });
     }
 }
 
@@ -84,6 +100,7 @@ exports.deleteLinkById = async (req, res) => {
         if (!link) {
             return res.status(404).json({ message: 'Link not found' });
         }
+        await Comment.deleteMany({link: req.params.id})
         res.status(204).send();
     } catch (error) {
         res.status(500).json({message: "Erreur serveur : " + error.messsage})

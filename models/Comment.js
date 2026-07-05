@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const CommentSchema = ({
+const CommentSchema = new Schema ({
     text: {
         type: String,
         required: [true, "Le texte du commentaire est obligatoire"],
@@ -15,6 +15,11 @@ const CommentSchema = ({
         type: Date,
         default: Date.now,
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', 
+        required: true
+    }
 });
 
-module.exports = mongoose.modele('Modele', ModeleSchema);
+module.exports = mongoose.model('Comment', CommentSchema);
