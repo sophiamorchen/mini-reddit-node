@@ -5,13 +5,14 @@ const connectDB = require('./config/db');
 
 //import des routes
 const linkRoutes = require('./routes/links');
+const authRoutes = require('./routes/auth');
 
 // Logger (middleware : effectué avant le traitement de la requête reçue en back end) -- ici, on va printer en console pour savoir ce qui se passe (en production(espace réel d'application) pour les developpeur)
 // on va pouvoir savoir "quand" quelle requête a été effectué, avec quelle méthode (get put post delete )et sur quelle URL, pour des notions de traçabilité
 
 app.use(
     (req, res, next) => {
-        console.log(`[${new Date().toISOString}] ${req.method} ${req.url}`);
+        console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
         next();
     });
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 // "Monter" les routes des liens (3 : pour les posts, pour les connections et pour les commentaires)
 app.use('/api/links', linkRoutes);
+app.use('/api/auth', authRoutes);
 
 dotenv.config();
 connectDB();
